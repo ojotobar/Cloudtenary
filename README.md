@@ -1,4 +1,4 @@
-# MongoDB Common Repo Package
+# Cloudtenary Package
 
 ## Table of Contents
 1. [Introduction](#introduction)
