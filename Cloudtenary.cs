@@ -96,7 +96,8 @@ namespace Cloudtenary
                 File = new FileDescription(originalFileName, fileStream),
                 PublicId = $"documents/{fileName}",
                 UseFilename = false,
-                UniqueFilename = false
+                UniqueFilename = false,
+                AccessMode = "public"
             };
 
             var uploadResult = await _cloud.UploadAsync(uploadParams);
