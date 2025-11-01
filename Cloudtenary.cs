@@ -37,8 +37,28 @@ namespace Cloudtenary
         /// <param name="width"></param>
         /// <param name="height"></param>
         /// <returns></returns>
-        public async Task<CloudtenaryUploadResult?> UploadImageAsync(string fileName, string originalFileName, Stream stream, int width, int height)
+        public async Task<CloudtenaryUploadResult?> UploadImageAsync(string fileName,
+                                                                     string originalFileName,
+                                                                     Stream stream,
+                                                                     int width = 320,
+                                                                     int height = 320,
+                                                                     string overlayText = "")
         {
+            var transformation = new Transformation()
+                .Width(width)
+                .Height(height)
+                .Crop("fill")
+                .Gravity("auto")
+                .Quality("auto");
+
+            if (!string.IsNullOrWhiteSpace(overlayText))
+            {
+                transformation = transformation
+                    .Overlay(new TextLayer().FontFamily("Arial").FontSize(20).Text(overlayText))
+                    .Gravity("south_east")
+                    .Opacity(60);
+            }
+
             var imageUploadParams = new ImageUploadParams
             {
                 File = new FileDescription(originalFileName, stream),
@@ -46,18 +66,18 @@ namespace Cloudtenary
                 PublicId = Path.GetFileNameWithoutExtension(fileName),
                 UseFilename = false,
                 UniqueFilename = false,
-                Transformation = new Transformation()
-                    .Width(width)
-                    .Height(height)
-                    .Crop("fill")
-                    .Gravity("auto")
-                    .Quality("auto")
+                Transformation = transformation
             };
 
-            var res = await _cloud.UploadAsync(imageUploadParams);
-            return res.StatusCode != System.Net.HttpStatusCode.OK ? 
-                null : 
-                new CloudtenaryUploadResult { PublicId = res.PublicId, Url = res.SecureUrl.ToString() };
+            var uploadResult = await _cloud.UploadAsync(imageUploadParams);
+            if (uploadResult == null || uploadResult.StatusCode != HttpStatusCode.OK)
+                return null;
+
+            return new CloudtenaryUploadResult
+            {
+                PublicId = uploadResult.PublicId,
+                Url = uploadResult.SecureUrl.ToString()
+            };
         }
 
         /// <summary>
@@ -66,17 +86,24 @@ namespace Cloudtenary
         /// <param name="fileName">Given file name</param>
         /// <param name="stream">File stream</param>
         /// <returns>An object with the public id and the url</returns>
-        public async Task<CloudtenaryUploadResult?> UploadImageAsync(string fileName, Stream stream)
+        public async Task<CloudtenaryUploadResult?> UploadImageAsync(string fileName,
+                                                                     Stream stream)
         {
             var imageUploadParams = new ImageUploadParams
             {
                 File = new FileDescription(fileName, stream),
                 Transformation = new Transformation()
             };
-            var res = await _cloud.UploadAsync(imageUploadParams);
-            return res.StatusCode != HttpStatusCode.OK ?
-                null :
-                new CloudtenaryUploadResult { PublicId = res.PublicId, Url = res.SecureUrl.ToString() };
+
+            var uploadResult = await _cloud.UploadAsync(imageUploadParams);
+            if (uploadResult == null || uploadResult.StatusCode != HttpStatusCode.OK)
+                return null;
+
+            return new CloudtenaryUploadResult
+            {
+                PublicId = uploadResult.PublicId,
+                Url = uploadResult.SecureUrl.ToString()
+            };
         }
 
         /// <summary>
@@ -107,6 +134,22 @@ namespace Cloudtenary
                                                                      int duration = 60,
                                                                      string overlayText = "")
         {
+            var transformation = new Transformation()
+                .Width(width)
+                .Height(height)
+                .Crop("fill")
+                .StartOffset(startOffset)
+                .Duration(duration)
+                .Effect("fade:2000");
+
+            if (!string.IsNullOrWhiteSpace(overlayText))
+            {
+                transformation = transformation
+                    .Overlay(new TextLayer().FontFamily("Arial").FontSize(20).Text(overlayText))
+                    .Gravity("south_east")
+                    .Opacity(60);
+            }
+
             var uploadParams = new VideoUploadParams()
             {
                 File = new FileDescription(fileName, stream),
@@ -115,13 +158,7 @@ namespace Cloudtenary
                 UseFilename = false,
                 UniqueFilename = true,
                 Overwrite = false,
-                Transformation = new Transformation()
-                    .Width(width).Height(height).Crop("limit")
-                    .StartOffset(startOffset).Duration(duration)
-                    .Effect("fade:2000")
-                    .Overlay(new TextLayer().FontFamily("Arial").FontSize(40).Text(overlayText))
-                    .Gravity("south_east")
-                    .Opacity(60)
+                Transformation = transformation
                     .FetchFormat("mp4")
             };
 
@@ -183,7 +220,9 @@ namespace Cloudtenary
         /// <param name="originalFileName"></param>
         /// <param name="fileStream"></param>
         /// <returns></returns>
-        public async Task<CloudtenaryUploadResult?> UploadRawFileAsync(string fileName, string originalFileName, Stream fileStream)
+        public async Task<CloudtenaryUploadResult?> UploadRawFileAsync(string fileName,
+                                                                       string originalFileName,
+                                                                       Stream fileStream)
         {
             var uploadParams = new RawUploadParams
             {
@@ -196,7 +235,6 @@ namespace Cloudtenary
             };
 
             var uploadResult = await _cloud.UploadAsync(uploadParams);
-
             if (uploadResult == null || uploadResult.StatusCode != HttpStatusCode.OK)
                 return null;
 
@@ -213,7 +251,8 @@ namespace Cloudtenary
         /// <param name="id">the public id of the resource to be deleted</param>
         /// <param name="type">The resource type of the file to be deleted</param>
         /// <returns>True/False</returns>
-        public async Task<bool> DeleteMediaFileAsync(string id, ResourceType type)
+        public async Task<bool> DeleteMediaFileAsync(string id,
+                                                     ResourceType type)
         {
             if (string.IsNullOrWhiteSpace(id))
                 return false;
@@ -222,8 +261,12 @@ namespace Cloudtenary
             {
                 ResourceType = type
             };
-            var delRes = await _cloud.DestroyAsync(deletionParams);
-            return delRes.StatusCode == System.Net.HttpStatusCode.OK && delRes.Result.ToLower() == "ok";
+
+            var deletionResult = await _cloud.DestroyAsync(deletionParams);
+            if (deletionResult == null || deletionResult.StatusCode != HttpStatusCode.OK)
+                return false;
+
+            return deletionResult.Result.ToLower() == "ok";
         }
     }
 }
