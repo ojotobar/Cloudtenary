@@ -1,5 +1,8 @@
 # Cloudtenary
 
+[![NuGet](https://img.shields.io/nuget/v/Cloudtenary.svg)](https://www.nuget.org/packages/Cloudtenary)  
+[![NuGet Downloads](https://img.shields.io/nuget/dt/Cloudtenary.svg)](https://www.nuget.org/packages/Cloudtenary)
+
 ### A lightweight .NET wrapper around Cloudinary for effortless file uploads.
 
 ---
