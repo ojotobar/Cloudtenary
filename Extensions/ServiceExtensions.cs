@@ -1,21 +1,20 @@
 ﻿using Cloudtenary.Settings;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Cloudtenary.Extensions
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection AddCloudtenary(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddCloudtenary(this ServiceCollection services, 
+                                                        Action<CloudtenarySettings> options)
         {
-            var config = configuration.GetSection(nameof(CloudtenarySettings));
+            var settings = new CloudtenarySettings();
+            options(settings);
+
             return services
-                .Configure<CloudtenarySettings>(config)
                 .AddSingleton<ICloudtenary>(provider =>
                 {
-                    var cloudSettings = provider.GetService<IOptions<CloudtenarySettings>>();
-                    return new Cloudtenary(cloudSettings);
+                    return new Cloudtenary(settings);
                 });
         }
     }
