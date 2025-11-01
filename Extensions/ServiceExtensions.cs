@@ -6,7 +6,7 @@ namespace Cloudtenary.Extensions
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection AddCloudtenary(this ServiceCollection services, 
+        public static IServiceCollection AddCloudtenary(this IServiceCollection services, 
                                                         Action<CloudtenarySettings> options)
         {
             var settings = new CloudtenarySettings();
