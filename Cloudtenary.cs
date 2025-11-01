@@ -1,5 +1,6 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Cloudtenary.Abstract;
 using Cloudtenary.Models;
 using Cloudtenary.Settings;
 using System.Net;
