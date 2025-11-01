@@ -1,7 +1,7 @@
 ﻿using CloudinaryDotNet.Actions;
 using Cloudtenary.Models;
 
-namespace Cloudtenary
+namespace Cloudtenary.Abstract
 {
     public interface ICloudtenary
     {
