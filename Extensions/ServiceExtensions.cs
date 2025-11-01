@@ -1,4 +1,5 @@
-﻿using Cloudtenary.Settings;
+﻿using Cloudtenary.Abstract;
+using Cloudtenary.Settings;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Cloudtenary.Extensions

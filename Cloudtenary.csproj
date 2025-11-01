@@ -5,7 +5,7 @@
 	<Nullable>enable</Nullable>
 	<PackageId>Cloudtenary</PackageId>
 	<Version>1.9.9</Version>
-	<PackageTags>Cloudinary;Uploads;</PackageTags>
+	<PackageTags>Cloudinary;Uploads;Video;Image</PackageTags>
 	<Authors>Ojo Toba Rufus</Authors>
 	<Description>
 		Library to work with Cloudinary
