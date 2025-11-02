@@ -47,16 +47,22 @@ namespace Cloudtenary
             var transformation = new Transformation()
                 .Width(width)
                 .Height(height)
-                .Crop("fill")
+                .Crop("limit")
                 .Gravity("auto")
                 .Quality("auto");
 
             if (!string.IsNullOrWhiteSpace(overlayText))
             {
                 transformation = transformation
-                    .Overlay(new TextLayer().FontFamily("Arial").FontSize(20).Text(overlayText))
+                    .Overlay(new TextLayer()
+                        .FontFamily("Arial")
+                        .FontSize(GetOverlaySize(width))
+                        .Text(overlayText)
+                        .FontWeight("bold"))
                     .Gravity("south_east")
-                    .Opacity(60);
+                    .Opacity(60)
+                    .X(10)
+                    .Y(10);
             }
 
             var imageUploadParams = new ImageUploadParams
@@ -130,24 +136,32 @@ namespace Cloudtenary
                                                                      Stream stream,
                                                                      int width = 720,
                                                                      int height = 480,
-                                                                     int startOffset = 3,
-                                                                     int duration = 60,
+                                                                     int startOffset = 2,
+                                                                     int duration = 120,
                                                                      string overlayText = "")
         {
             var transformation = new Transformation()
                 .Width(width)
                 .Height(height)
-                .Crop("fill")
+                .Crop("limit")
+                .Gravity("auto")
+                .Quality("auto")
                 .StartOffset(startOffset)
                 .Duration(duration)
-                .Effect("fade:2000");
+                .Effect("fade:1000,fadeout:1000");
 
             if (!string.IsNullOrWhiteSpace(overlayText))
             {
                 transformation = transformation
-                    .Overlay(new TextLayer().FontFamily("Arial").FontSize(20).Text(overlayText))
+                    .Overlay(new TextLayer()
+                        .FontFamily("Arial")
+                        .FontSize(GetOverlaySize(width))
+                        .Text(overlayText)
+                        .FontWeight("bold"))
                     .Gravity("south_east")
-                    .Opacity(60);
+                    .Opacity(60)
+                    .X(10)
+                    .Y(10);
             }
 
             var uploadParams = new VideoUploadParams()
@@ -267,6 +281,16 @@ namespace Cloudtenary
                 return false;
 
             return deletionResult.Result.ToLower() == "ok";
+        }
+
+        private int GetOverlaySize(int width)
+        {
+            return width switch
+            {
+                <= 320 => 10,
+                <= 640 => 14,
+                _ => 18
+            };
         }
     }
 }
