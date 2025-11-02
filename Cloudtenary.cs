@@ -57,11 +57,12 @@ namespace Cloudtenary
                     .Overlay(new TextLayer()
                         .FontFamily("Arial")
                         .FontSize(GetOverlaySize(width))
-                        .Text(overlayText))
-                        .Gravity("south_east")
-                        .Opacity(60)
-                        .X(10)
-                        .Y(10);
+                        .Text(overlayText)
+                        .FontWeight("bold"))
+                    .Gravity("south_east")
+                    .Opacity(60)
+                    .X(10)
+                    .Y(10);
             }
 
             var imageUploadParams = new ImageUploadParams
@@ -155,11 +156,12 @@ namespace Cloudtenary
                     .Overlay(new TextLayer()
                         .FontFamily("Arial")
                         .FontSize(GetOverlaySize(width))
-                        .Text(overlayText))
-                        .Gravity("south_east")
-                        .Opacity(60)
-                        .X(10)
-                        .Y(10);
+                        .Text(overlayText)
+                        .FontWeight("bold"))
+                    .Gravity("south_east")
+                    .Opacity(60)
+                    .X(10)
+                    .Y(10);
             }
 
             var uploadParams = new VideoUploadParams()
